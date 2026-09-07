@@ -16,9 +16,17 @@ Public Class FormRegister
             MessageBox.Show("Le password non coincidono.", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
+        Dim passwordError As String = Nothing
+        If Not PasswordPolicy.Validate(password, username, passwordError) Then
+            MessageBox.Show(passwordError & Environment.NewLine & Environment.NewLine & PasswordPolicy.RequirementsText(), "Password non sicura", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
         ' ruolo di default user, se MakeAdmin è true crea admin
         Dim role = If(MakeAdmin, "admin", "user")
-        DBHelper.CreateUser(username, password, role)
+        If Not DBHelper.CreateUser(username, password, role) Then
+            MessageBox.Show(DBHelper.LastError, "Impossibile creare l'utente", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
         MessageBox.Show("Registrazione completata. Effettua il login.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Me.Close()
     End Sub

@@ -306,7 +306,12 @@ Public Class DBHelper
         Return Nothing
     End Function
 
-    Public Shared Sub CreateUser(username As String, password As String, role As String)
+    Public Shared Function CreateUser(username As String, password As String, role As String) As Boolean
+        Dim validationMessage As String = Nothing
+        If Not PasswordPolicy.Validate(password, username, validationMessage) Then
+            LastError = validationMessage
+            Return False
+        End If
         Dim hash = HashPassword(password)
         Try
             Using con As New SQLiteConnection(ConnectionString)
@@ -319,9 +324,13 @@ Public Class DBHelper
                     cmd.ExecuteNonQuery()
                 End Using
             End Using
+            LastError = Nothing
+            Return True
         Catch ex As Exception
+            LastError = ex.Message
+            Return False
         End Try
-    End Sub
+    End Function
 
     Public Shared Function ListUsers() As DataTable
         Dim dt As New DataTable()
@@ -512,7 +521,12 @@ Public Class DBHelper
         End Try
     End Sub
 
-    Public Shared Sub ChangePassword(username As String, newPassword As String)
+    Public Shared Function ChangePassword(username As String, newPassword As String) As Boolean
+        Dim validationMessage As String = Nothing
+        If Not PasswordPolicy.Validate(newPassword, username, validationMessage) Then
+            LastError = validationMessage
+            Return False
+        End If
         Dim hash = HashPassword(newPassword)
         Try
             Using con As New SQLiteConnection(ConnectionString)
@@ -524,9 +538,13 @@ Public Class DBHelper
                     cmd.ExecuteNonQuery()
                 End Using
             End Using
+            LastError = Nothing
+            Return True
         Catch ex As Exception
+            LastError = ex.Message
+            Return False
         End Try
-    End Sub
+    End Function
 
     Public Shared Sub UpdateUserRole(username As String, role As String)
         Try

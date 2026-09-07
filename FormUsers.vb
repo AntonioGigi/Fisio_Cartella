@@ -41,8 +41,16 @@ Public Class FormUsers
         If String.IsNullOrEmpty(username) Then Return
         Dim password = Microsoft.VisualBasic.Interaction.InputBox("Password:", "Nuovo utente", "")
         If String.IsNullOrEmpty(password) Then Return
+        Dim passwordError As String = Nothing
+        If Not PasswordPolicy.Validate(password, username, passwordError) Then
+            MessageBox.Show(passwordError & Environment.NewLine & Environment.NewLine & PasswordPolicy.RequirementsText(), "Password non sicura", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
         Dim role = Microsoft.VisualBasic.Interaction.InputBox("Ruolo (e.g., admin,user):", "Nuovo utente", "user")
-        DBHelper.CreateUser(username, password, role)
+        If Not DBHelper.CreateUser(username, password, role) Then
+            MessageBox.Show(DBHelper.LastError, "Impossibile creare l'utente", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
         LoadUsers()
     End Sub
 
@@ -52,7 +60,15 @@ Public Class FormUsers
         Dim username = dgvUsers.CurrentRow.Cells("Username").Value.ToString()
         Dim newPass = Microsoft.VisualBasic.Interaction.InputBox($"Nuova password per {username}:", "Cambia password", "")
         If String.IsNullOrEmpty(newPass) Then Return
-        DBHelper.ChangePassword(username, newPass)
+        Dim passwordError As String = Nothing
+        If Not PasswordPolicy.Validate(newPass, username, passwordError) Then
+            MessageBox.Show(passwordError & Environment.NewLine & Environment.NewLine & PasswordPolicy.RequirementsText(), "Password non sicura", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+        If Not DBHelper.ChangePassword(username, newPass) Then
+            MessageBox.Show(DBHelper.LastError, "Impossibile cambiare la password", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
         MessageBox.Show("Password aggiornata.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
