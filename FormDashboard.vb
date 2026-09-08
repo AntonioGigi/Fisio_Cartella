@@ -1,3 +1,5 @@
+Imports System.Linq
+
 Public Class FormDashboard
     Private Sub FormDashboard_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If Not Session.IsAuthenticated() Then
@@ -30,13 +32,27 @@ Public Class FormDashboard
         ForeColor = textColor
         Font = New Font("Segoe UI", 9.5!, FontStyle.Regular)
         MinimumSize = New Size(820, 560)
+        Me.Text = "FisioCartella - Dashboard"
+
+        Dim appTitle = Controls.OfType(Of Label)().FirstOrDefault(Function(label) label.Name = "lblAppName")
+        If appTitle Is Nothing Then
+            appTitle = New Label With {
+                .Name = "lblAppName",
+                .Text = "FisioCartella",
+                .AutoSize = True
+            }
+            Controls.Add(appTitle)
+        End If
+        appTitle.Font = New Font("Segoe UI", 14.0!, FontStyle.Bold)
+        appTitle.ForeColor = Color.FromArgb(55, 81, 145)
+        appTitle.Location = New Point(32, 20)
 
         ' Titolo della dashboard.
         lblWelcome.Text = $"Benvenuto, {Session.CurrentUser}"
         lblWelcome.AutoSize = True
         lblWelcome.Font = New Font("Segoe UI", 20.0!, FontStyle.Regular)
         lblWelcome.ForeColor = Color.FromArgb(55, 81, 145)
-        lblWelcome.Location = New Point(32, 28)
+        lblWelcome.Location = New Point(32, 52)
 
         ' Griglia centrale: tre card per riga, centrate e responsive.
         tlpButtons.AutoSize = False

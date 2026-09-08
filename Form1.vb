@@ -3,6 +3,7 @@ Imports System.IO
 
 Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Text = "FisioCartella - Accesso"
         ' Inizializza DB e tabelle
         DBHelper.InitializeDatabase()
         ' Applica tema
@@ -23,25 +24,33 @@ Public Class Form1
 
         ' Miglioramenti estetici: pannello centrale
         Dim card As New Panel()
-        card.Size = New Size(380, 300)
+        card.Size = New Size(380, 340)
         card.Location = New Point((Me.ClientSize.Width - card.Width) \ 2, (Me.ClientSize.Height - card.Height) \ 2)
         card.BackColor = Color.FromArgb(255, 255, 255)
         card.BorderStyle = BorderStyle.None
         ' Sposta i controlli esistenti dentro la card
-        For Each c As Control In New List(Of Control) From {lblUser, txtUser, lblPass, txtPass, btnLogin, lblMessage}
+        Dim appTitle As New Label()
+        appTitle.Name = "lblAppName"
+        appTitle.Text = "FisioCartella"
+        appTitle.AutoSize = True
+        appTitle.Font = New Font("Segoe UI", 20.0!, FontStyle.Bold)
+        appTitle.ForeColor = Color.FromArgb(55, 81, 145)
+
+        For Each c As Control In New List(Of Control) From {appTitle, lblUser, txtUser, lblPass, txtPass, btnLogin, lblMessage}
             Me.Controls.Remove(c)
             card.Controls.Add(c)
         Next
         ' Regola posizioni relative all'interno del card
-        lblUser.Location = New Point(20, 20)
-        txtUser.Location = New Point(20, 50)
-        lblPass.Location = New Point(20, 95)
-        txtPass.Location = New Point(20, 125)
-        btnLogin.Location = New Point(20, 170)
+        appTitle.Location = New Point(20, 16)
+        lblUser.Location = New Point(20, 68)
+        txtUser.Location = New Point(20, 96)
+        lblPass.Location = New Point(20, 140)
+        txtPass.Location = New Point(20, 168)
+        btnLogin.Location = New Point(20, 215)
         ' Correggi colori per migliore contrasto sul card bianco
         lblUser.ForeColor = Color.Black
         lblPass.ForeColor = Color.Black
-        lblMessage.Location = New Point(20, 225)
+        lblMessage.Location = New Point(20, 270)
         Me.Controls.Add(card)
     End Sub
 
