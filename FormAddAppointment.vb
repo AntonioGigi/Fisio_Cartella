@@ -1,58 +1,75 @@
-Partial Public Class FormAddAppointment
-    Public AppointmentCreated As Boolean = False
-    Public InitialStartDate As DateTime = DateTime.MinValue
-    Public InitialEndDate As DateTime = DateTime.MinValue
-    Private Sub FormAddAppointment_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Theme.ApplyTheme(Me)
-        ' carica pazienti
-        Dim dt = DBHelper.GetAllPatients()
-        cbPatients.DisplayMember = "FirstName"
-        cbPatients.ValueMember = "Id"
-        ' create a combined name column
-        If dt.Columns.Contains("FirstName") AndAlso dt.Columns.Contains("LastName") Then
-            dt.Columns.Add("DisplayName", GetType(String), "FirstName + ' ' + LastName")
-            cbPatients.DisplayMember = "DisplayName"
-        End If
-        cbPatients.DataSource = dt
-        dtpStart.Format = DateTimePickerFormat.Custom
-        dtpStart.CustomFormat = "yyyy-MM-dd HH:mm"
-        dtpEnd.Format = DateTimePickerFormat.Custom
-        dtpEnd.CustomFormat = "yyyy-MM-dd HH:mm"
-        ' Se è stata passata una data iniziale, impostala
+Imports System.ComponentModel
+Public Class FormNuovoAppuntamento
+    <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+    Public Property InitialStartDate As DateTime = DateTime.Now
+    <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+    Public Property InitialEndDate As DateTime = DateTime.Now.AddHours(1)
+    Private Sub FormNuovoAppuntamento_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Impostazioni opzionali di avvio
         If InitialStartDate <> DateTime.MinValue Then
-            Try
-                dtpStart.Value = InitialStartDate
-            Catch ex As Exception
-            End Try
+            dtpInizio.Value = InitialStartDate
         End If
+
         If InitialEndDate <> DateTime.MinValue Then
-            Try
-                dtpEnd.Value = InitialEndDate
-            Catch ex As Exception
-            End Try
+            dtpFine.Value = InitialEndDate
         End If
+        cboTipoPagamento.Items.Clear()
+        cboTipoPagamento.DropDownStyle = ComboBoxStyle.DropDownList
+        cboTipoPagamento.Items.AddRange(New String() {"Contanti", "Carta di Credito", "Bonifico", "Assegno", "Pacchetto/ciclo"})
+        cboTipoPagamento.SelectedIndex = 0
+        CaricaPazienti()
+    End Sub
+    Private Sub CaricaPazienti()
+        Try
+            ' Recupera la DataTable usando la stessa classe del FormPatients
+            Dim dt As DataTable = DBHelper.GetAllPatients()
+
+            ' Aggiunge una colonna calcolata "NomeCompleto" per la visualizzazione nel menu
+            If Not dt.Columns.Contains("NomeCompleto") Then
+                dt.Columns.Add("NomeCompleto", GetType(String), "LastName + ' ' + FirstName")
+            End If
+
+            ' Binding alla ComboBox
+            cboPaziente.DataSource = dt
+            cboPaziente.DisplayMember = "NomeCompleto" ' Mostra "Cognome Nome"
+            cboPaziente.ValueMember = "Id"             ' Associa l'ID del record
+            cboPaziente.SelectedIndex = -1             ' Parte senza selezione attiva
+        Catch ex As Exception
+            MessageBox.Show("Errore durante il caricamento dei pazienti: " & ex.Message, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Private Sub btnSalva_Click(sender As Object, e As EventArgs) Handles btnSalva.Click
+        ' Validazione dati di base
+        If cboPaziente.SelectedValue Is Nothing OrElse cboPaziente.SelectedIndex = -1 Then
+            MessageBox.Show("Seleziona un paziente.", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        Try
+            Dim patientId As Integer = Convert.ToInt32(cboPaziente.SelectedValue)
+            Dim startDate As DateTime = dtpInizio.Value
+            Dim endDate As DateTime = dtpFine.Value
+            Dim price As Decimal = 0
+            Decimal.TryParse(txtPrezzo.Text, price)
+            Dim notes As String = txtNote.Text.Trim()
+            Dim paymentMode As String = If(cboTipoPagamento.SelectedItem IsNot Nothing, cboTipoPagamento.SelectedItem.ToString(), "")
+
+            ' 1. Esegui la funzione di salvataggio nel database tramite DBHelper
+            ' (usa il nome effettivo del metodo presente nel tuo DBHelper)
+            DBHelper.InsertAppointment(patientId, startDate, endDate, price, notes, paymentMode)
+
+            ' 2. FONDAMENTALE: comunica a FormCalendar che il salvataggio è andato a buon fine
+            Me.DialogResult = DialogResult.OK
+            Me.Close()
+
+        Catch ex As Exception
+            MessageBox.Show("Errore durante il salvataggio: " & ex.Message, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        If cbPatients.SelectedValue Is Nothing Then
-            MessageBox.Show("Seleziona un paziente.", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
-        Dim pid = Convert.ToInt32(cbPatients.SelectedValue)
-        Dim s = dtpStart.Value
-        Dim en = dtpEnd.Value
-        Dim price = 0D
-        Decimal.TryParse(txtPrice.Text, price)
-        Dim notes = txtNotes.Text
-        Dim paymentMode = If(cbPaymentMode.SelectedItem IsNot Nothing, cbPaymentMode.SelectedItem.ToString(), "Per prestazione")
-        Dim serviceType = ""
-        DBHelper.InsertAppointment(pid, s, en, price, notes, paymentMode, serviceType)
-        If Not String.IsNullOrEmpty(DBHelper.LastError) Then
-            MessageBox.Show($"Errore durante l'inserimento appuntamento:\n{DBHelper.LastError}", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
-        Me.AppointmentCreated = True
-        Me.DialogResult = DialogResult.OK
+    Private Sub btnAnnulla_Click(sender As Object, e As EventArgs) Handles btnAnnulla.Click
+        Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
+
 End Class

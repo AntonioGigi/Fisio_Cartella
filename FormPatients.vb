@@ -19,7 +19,7 @@ Public Class FormPatients
 
         LoadPatients()
         LayoutPatients()
-
+        Me.dgvPatients.AllowUserToAddRows = False
         ' Registrare l'handler per aggiornamenti dati
         Try
             AddHandler Session.DataChanged, AddressOf LoadPatients
@@ -64,6 +64,7 @@ Public Class FormPatients
         Dim dt As DataTable = DBHelper.GetAllPatients()
         dgvPatients.DataSource = dt
         dgvPatients.AutoResizeColumns()
+        Me.dgvPatients.AllowUserToAddRows = False
         If dgvPatients.Columns.Contains("Id") Then dgvPatients.Columns("Id").Visible = False
         ' Selezione prima riga
         If dgvPatients.Rows.Count > 0 Then
@@ -74,6 +75,8 @@ Public Class FormPatients
     End Sub
 
     Private Sub LoadTreatmentsForSelected()
+        Me.dgvPatients.AllowUserToAddRows = False
+        Me.dgvTreatments.AllowUserToAddRows = False
         If dgvPatients.CurrentRow Is Nothing Then
             dgvTreatments.DataSource = Nothing
             Return

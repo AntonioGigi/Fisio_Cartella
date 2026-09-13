@@ -44,7 +44,7 @@ Partial Class FormUsers
         '
         Me.btnNew.Location = New System.Drawing.Point(12, 325)
         Me.btnNew.Name = "btnNew"
-        Me.btnNew.Size = New System.Drawing.Size(94, 29)
+        Me.btnNew.Size = New System.Drawing.Size(94, 39)
         Me.btnNew.TabIndex = 1
         Me.btnNew.Text = "Nuovo"
         Me.btnNew.UseVisualStyleBackColor = True
@@ -53,7 +53,7 @@ Partial Class FormUsers
         '
         Me.btnChangePassword.Location = New System.Drawing.Point(112, 325)
         Me.btnChangePassword.Name = "btnChangePassword"
-        Me.btnChangePassword.Size = New System.Drawing.Size(142, 29)
+        Me.btnChangePassword.Size = New System.Drawing.Size(162, 39)
         Me.btnChangePassword.TabIndex = 2
         Me.btnChangePassword.Text = "Cambia password"
         Me.btnChangePassword.UseVisualStyleBackColor = True
@@ -62,7 +62,7 @@ Partial Class FormUsers
         '
         Me.btnDelete.Location = New System.Drawing.Point(260, 325)
         Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(94, 29)
+        Me.btnDelete.Size = New System.Drawing.Size(94, 39)
         Me.btnDelete.TabIndex = 3
         Me.btnDelete.Text = "Elimina"
         Me.btnDelete.UseVisualStyleBackColor = True
@@ -71,7 +71,7 @@ Partial Class FormUsers
         '
         Me.btnSetRole.Location = New System.Drawing.Point(360, 325)
         Me.btnSetRole.Name = "btnSetRole"
-        Me.btnSetRole.Size = New System.Drawing.Size(120, 29)
+        Me.btnSetRole.Size = New System.Drawing.Size(120, 39)
         Me.btnSetRole.TabIndex = 4
         Me.btnSetRole.Text = "Imposta ruolo"
         Me.btnSetRole.UseVisualStyleBackColor = True

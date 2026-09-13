@@ -38,7 +38,7 @@ Partial Class FormAddTreatment
         ' lblNotes
         '
         Me.lblNotes.AutoSize = True
-        Me.lblNotes.Location = New System.Drawing.Point(16, 56)
+        Me.lblNotes.Location = New System.Drawing.Point(26, 56)
         Me.lblNotes.Name = "lblNotes"
         Me.lblNotes.Size = New System.Drawing.Size(44, 20)
         Me.lblNotes.TabIndex = 1
@@ -46,7 +46,7 @@ Partial Class FormAddTreatment
         '
         ' txtNotes
         '
-        Me.txtNotes.Location = New System.Drawing.Point(16, 80)
+        Me.txtNotes.Location = New System.Drawing.Point(26, 80)
         Me.txtNotes.Multiline = True
         Me.txtNotes.Name = "txtNotes"
         Me.txtNotes.Size = New System.Drawing.Size(360, 80)
@@ -72,7 +72,7 @@ Partial Class FormAddTreatment
         '
         Me.btnSave.Location = New System.Drawing.Point(16, 232)
         Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(94, 32)
+        Me.btnSave.Size = New System.Drawing.Size(104, 48)
         Me.btnSave.TabIndex = 5
         Me.btnSave.Text = "Salva"
         Me.btnSave.UseVisualStyleBackColor = True
@@ -81,7 +81,7 @@ Partial Class FormAddTreatment
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(392, 280)
+        Me.ClientSize = New System.Drawing.Size(452, 350)
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.txtProgress)
         Me.Controls.Add(Me.lblProgress)

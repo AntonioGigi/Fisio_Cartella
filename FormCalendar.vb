@@ -13,6 +13,7 @@ Public Class FormCalendar
         AddHandler dgvAppointments.CellDoubleClick, AddressOf dgvAppointments_CellDoubleClick
         AddHandler dgvAppointments.CurrentCellDirtyStateChanged, AddressOf dgvAppointments_CurrentCellDirtyStateChanged
         AddHandler dgvAppointments.CellContentClick, AddressOf dgvAppointments_CellContentClick
+        Me.dgvAppointments.AllowUserToAddRows = False
         LayoutCalendar()
     End Sub
 
@@ -173,7 +174,7 @@ Public Class FormCalendar
 
     Private Sub btnAddAppointment_Click(sender As Object, e As EventArgs) Handles btnAddAppointment.Click
         ' Apri dialog per aggiungere appuntamento
-        Dim f As New FormAddAppointment()
+        Dim f As New FormNuovoAppuntamento()
         ' Imposta data iniziale sul giorno selezionato
         Try
             f.InitialStartDate = New DateTime(monthCalendar.SelectionStart.Year, monthCalendar.SelectionStart.Month, monthCalendar.SelectionStart.Day, 9, 0, 0)

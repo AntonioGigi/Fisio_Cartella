@@ -48,9 +48,10 @@ Partial Class FormPatients
         '
         Me.btnSearch.Location = New System.Drawing.Point(644, 12)
         Me.btnSearch.Name = "btnSearch"
-        Me.btnSearch.Size = New System.Drawing.Size(110, 28)
+        Me.btnSearch.Size = New System.Drawing.Size(110, 38)
         Me.btnSearch.TabIndex = 1
         Me.btnSearch.Text = "Cerca"
+        Me.btnSearch.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         Me.btnSearch.UseVisualStyleBackColor = True
         '
         ' dgvPatients
@@ -67,18 +68,18 @@ Partial Class FormPatients
         '
         Me.btnNew.Location = New System.Drawing.Point(12, 405)
         Me.btnNew.Name = "btnNew"
-        Me.btnNew.Size = New System.Drawing.Size(120, 38)
+        Me.btnNew.Size = New System.Drawing.Size(160, 38)
         Me.btnNew.TabIndex = 1
-        Me.btnNew.Text = "Nuovo"
+        Me.btnNew.Text = "Nuovo paziente"
         Me.btnNew.UseVisualStyleBackColor = True
         '
         ' btnDelete
         '
         Me.btnDelete.Location = New System.Drawing.Point(144, 405)
         Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(120, 38)
+        Me.btnDelete.Size = New System.Drawing.Size(160, 38)
         Me.btnDelete.TabIndex = 2
-        Me.btnDelete.Text = "Elimina"
+        Me.btnDelete.Text = "Elimina paziente"
         Me.btnDelete.UseVisualStyleBackColor = True
         '
         ' btnDeleteTreatment
