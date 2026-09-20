@@ -11,6 +11,8 @@ Public Class FormPatients
         End Try
     End Sub
     Private Sub FormPatients_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        dgvPatients_SelectionChanged(Nothing, Nothing)
+        dgvTreatments_SelectionChanged(Nothing, Nothing)
         Try
             Theme.ApplyTheme(Me)
         Catch ex As Exception
@@ -19,7 +21,14 @@ Public Class FormPatients
 
         LoadPatients()
         LayoutPatients()
-        Me.dgvPatients.AllowUserToAddRows = False
+        ' Imposta la selezione dell'intera riga al click
+        dgvPatients.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgvTreatments.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+        ' Nasconde la riga vuota in fondo con l'asterisco
+        dgvPatients.AllowUserToAddRows = False
+        dgvTreatments.AllowUserToAddRows = False
+
         ' Registrare l'handler per aggiornamenti dati
         Try
             AddHandler Session.DataChanged, AddressOf LoadPatients
@@ -43,8 +52,8 @@ Public Class FormPatients
         lblTreatments.Location = New Point(margin, actionsTop - 32)
         btnNew.Location = New Point(margin, actionsTop)
         btnDelete.Location = New Point(btnNew.Right + 10, actionsTop)
-        btnRefresh.Location = New Point(btnDelete.Right + 10, actionsTop)
-        btnAddTreatment.Location = New Point(btnRefresh.Right + 10, actionsTop)
+        btnOpenFolder.Location = New Point(btnDelete.Right + 10, actionsTop)
+        btnAddTreatment.Location = New Point(btnOpenFolder.Right + 10, actionsTop)
         btnDeleteTreatment.Location = New Point(btnAddTreatment.Right + 10, actionsTop)
         Dim treatmentsTop = actionsTop + btnNew.Height + 18
         dgvTreatments.Location = New Point(margin, treatmentsTop)
@@ -99,23 +108,53 @@ Public Class FormPatients
     End Sub
 
     Private Sub btnNew_Click(sender As Object, e As EventArgs) Handles btnNew.Click
-        Dim firstName = Microsoft.VisualBasic.Interaction.InputBox("Nome:", "Nuovo paziente", "")
-        If String.IsNullOrEmpty(firstName) Then Return
-        Dim lastName = Microsoft.VisualBasic.Interaction.InputBox("Cognome:", "Nuovo paziente", "")
-        Dim cf = Microsoft.VisualBasic.Interaction.InputBox("Codice Fiscale:", "Nuovo paziente", "")
-        ' Validazione minima
-        If cf.Length <> 0 AndAlso cf.Length < 10 Then
-            MessageBox.Show("Codice fiscale non valido.", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
-        Dim contacts = Microsoft.VisualBasic.Interaction.InputBox("Contatti:", "Nuovo paziente", "")
-        Dim anam = Microsoft.VisualBasic.Interaction.InputBox("Anamnesi:", "Nuovo paziente", "")
-        DBHelper.InsertPatient(firstName, lastName, cf, contacts, anam)
-        LoadPatients()
+        Using f As New FormNewPatient()
+            ' Se il paziente viene salvato con successo, ricarica la lista
+            If f.ShowDialog() = DialogResult.OK Then
+                LoadPatients()
+            End If
+        End Using
     End Sub
 
     Private Sub dgvPatients_SelectionChanged(sender As Object, e As EventArgs) Handles dgvPatients.SelectionChanged
-        LoadTreatmentsForSelected()
+        Try
+            ' 1. Verifica in modo assoluto se c'è un paziente vero selezionato
+            Dim pazienteSelezionato As Boolean = False
+            If dgvPatients.CurrentRow IsNot Nothing AndAlso Not dgvPatients.CurrentRow.IsNewRow Then
+                pazienteSelezionato = True
+            End If
+
+            ' 2. SBLOCCA il pulsante (risolve il problema del non poter cliccare)
+            If btnOpenFolder IsNot Nothing Then btnOpenFolder.Enabled = True
+
+            ' 3. Mostra o nasconde i bottoni in base alla selezione
+            If btnOpenFolder IsNot Nothing Then btnOpenFolder.Visible = pazienteSelezionato
+            If btnDelete IsNot Nothing Then btnDelete.Visible = pazienteSelezionato
+            If btnAddTreatment IsNot Nothing Then btnAddTreatment.Visible = pazienteSelezionato
+
+            ' 4. Aggiorna la tabella in basso
+            If pazienteSelezionato Then
+                LoadTreatmentsForSelected()
+            Else
+                If dgvTreatments IsNot Nothing Then dgvTreatments.DataSource = Nothing
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Private Sub dgvTreatments_SelectionChanged(sender As Object, e As EventArgs) Handles dgvTreatments.SelectionChanged
+        Try
+            Dim sedutaSelezionata As Boolean = False
+            If dgvTreatments.CurrentRow IsNot Nothing AndAlso Not dgvTreatments.CurrentRow.IsNewRow Then
+                sedutaSelezionata = True
+            End If
+
+            If btnDeleteTreatment IsNot Nothing Then
+                btnDeleteTreatment.Enabled = True
+                btnDeleteTreatment.Visible = sedutaSelezionata
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Private Sub dgvPatients_DoubleClick(sender As Object, e As EventArgs) Handles dgvPatients.DoubleClick
@@ -183,7 +222,17 @@ Public Class FormPatients
         End If
     End Sub
 
-    Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
-        LoadPatients()
+    Private Sub btnOpenFolder_Click(sender As Object, e As EventArgs) Handles btnOpenFolder.Click
+        ' Verifica che ci sia effettivamente una riga selezionata
+        If dgvPatients.CurrentRow Is Nothing Then Return
+
+        Dim idObj = dgvPatients.CurrentRow.Cells("Id").Value
+        If idObj Is Nothing Then Return
+
+        ' Apre la FormClinicalRecord passando l'ID del paziente
+        Dim id = Convert.ToInt32(idObj)
+        Dim f As New FormClinicalRecord()
+        f.PatientId = id
+        f.ShowDialog()
     End Sub
 End Class

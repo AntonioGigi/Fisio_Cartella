@@ -23,7 +23,7 @@ Partial Class FormPatients
         Me.dgvPatients = New System.Windows.Forms.DataGridView()
         Me.btnNew = New System.Windows.Forms.Button()
         Me.btnDelete = New System.Windows.Forms.Button()
-        Me.btnRefresh = New System.Windows.Forms.Button()
+        Me.btnOpenFolder = New System.Windows.Forms.Button()
         Me.lblTreatments = New System.Windows.Forms.Label()
         Me.dgvTreatments = New System.Windows.Forms.DataGridView()
         Me.btnAddTreatment = New System.Windows.Forms.Button()
@@ -91,14 +91,15 @@ Partial Class FormPatients
         Me.btnDeleteTreatment.Text = "Elimina seduta selezionata"
         Me.btnDeleteTreatment.UseVisualStyleBackColor = True
         '
-        ' btnRefresh
+        ' btnOpenFolder
         '
-        Me.btnRefresh.Location = New System.Drawing.Point(276, 405)
-        Me.btnRefresh.Name = "btnRefresh"
-        Me.btnRefresh.Size = New System.Drawing.Size(120, 38)
-        Me.btnRefresh.TabIndex = 3
-        Me.btnRefresh.Text = "Aggiorna"
-        Me.btnRefresh.UseVisualStyleBackColor = True
+        Me.btnOpenFolder.Location = New System.Drawing.Point(276, 405)
+        Me.btnOpenFolder.Name = "btnOpenFolder"
+        Me.btnOpenFolder.Size = New System.Drawing.Size(150, 38)
+        Me.btnOpenFolder.TabIndex = 3
+        Me.btnOpenFolder.Text = "Apri Cartella"
+        Me.btnOpenFolder.Enabled = False
+        Me.btnOpenFolder.UseVisualStyleBackColor = True
         '
         ' lblTreatments
         '
@@ -126,7 +127,7 @@ Partial Class FormPatients
         '
         Me.btnAddTreatment.Location = New System.Drawing.Point(408, 405)
         Me.btnAddTreatment.Name = "btnAddTreatment"
-        Me.btnAddTreatment.Size = New System.Drawing.Size(130, 38)
+        Me.btnAddTreatment.Size = New System.Drawing.Size(150, 38)
         Me.btnAddTreatment.TabIndex = 6
         Me.btnAddTreatment.Text = "Aggiungi seduta"
         Me.btnAddTreatment.UseVisualStyleBackColor = True
@@ -136,7 +137,7 @@ Partial Class FormPatients
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(984, 690)
-        Me.Controls.Add(Me.btnRefresh)
+        Me.Controls.Add(Me.btnOpenFolder)
         Me.Controls.Add(Me.btnDeleteTreatment)
         Me.Controls.Add(Me.btnAddTreatment)
         Me.Controls.Add(Me.dgvTreatments)
@@ -161,7 +162,7 @@ Partial Class FormPatients
     Private WithEvents dgvPatients As System.Windows.Forms.DataGridView
     Private WithEvents btnNew As System.Windows.Forms.Button
     Private WithEvents btnDelete As System.Windows.Forms.Button
-    Private WithEvents btnRefresh As System.Windows.Forms.Button
+    Private WithEvents btnOpenFolder As System.Windows.Forms.Button
     Private lblTreatments As System.Windows.Forms.Label
     Private WithEvents dgvTreatments As System.Windows.Forms.DataGridView
     Private WithEvents btnAddTreatment As System.Windows.Forms.Button

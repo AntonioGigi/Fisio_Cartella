@@ -77,19 +77,47 @@ Public Class DBHelper
         End Try
     End Sub
 
-    Public Shared Sub UpdatePatientAnamnesis(id As Integer, anamnesis As String)
+    Public Shared Sub UpdatePatientAnamnesis(patientId As Integer, nuovaAnamnesi As String)
+        ' Assicurati di usare il nome della colonna corretto (Anamnesis o Anamnesi)
+        Dim query As String = "UPDATE Patients SET Anamnesis = @anamnesi WHERE Id = @id"
+
+        Using conn As New SQLiteConnection(ConnectionString) ' Usa la tua stringa di connessione
+            Using cmd As New SQLiteCommand(query, conn)
+                cmd.Parameters.AddWithValue("@anamnesi", nuovaAnamnesi)
+                cmd.Parameters.AddWithValue("@id", patientId)
+
+                conn.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+        Try
+            Session.NotifyDataChanged()
+        Catch ex As Exception
+        End Try
+
+    End Sub
+    Public Shared Sub UpdatePatient(id As Integer, firstName As String, lastName As String, codiceFiscale As String, contacts As String)
         Try
             Using con As New SQLiteConnection(ConnectionString)
                 con.Open()
                 Using cmd As SQLiteCommand = con.CreateCommand()
-                    cmd.CommandText = "UPDATE Patients SET Anamnesis = @a WHERE Id = @id"
-                    cmd.Parameters.AddWithValue("@a", anamnesis)
+                    cmd.CommandText = "UPDATE Patients SET FirstName = @f, LastName = @l, CodiceFiscale = @c, Contacts = @t WHERE Id = @id"
+                    cmd.Parameters.AddWithValue("@f", firstName)
+                    cmd.Parameters.AddWithValue("@l", lastName)
+                    cmd.Parameters.AddWithValue("@c", codiceFiscale)
+                    cmd.Parameters.AddWithValue("@t", contacts)
                     cmd.Parameters.AddWithValue("@id", id)
                     cmd.ExecuteNonQuery()
                 End Using
             End Using
 
+            ' AVVISO IN TEMPO REALE: dice alla tabella principale di aggiornarsi
+            Try
+                Session.NotifyDataChanged()
+            Catch ex As Exception
+            End Try
         Catch ex As Exception
+            Throw ex
         End Try
     End Sub
 
@@ -666,4 +694,5 @@ Public Class DBHelper
         Catch ex As Exception
         End Try
     End Sub
+
 End Class
