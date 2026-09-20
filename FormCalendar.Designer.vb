@@ -63,7 +63,7 @@ Partial Class FormCalendar
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(250, 42)
         Me.btnDelete.TabIndex = 3
-        Me.btnDelete.Text = "Elimina elemento"
+        Me.btnDelete.Text = "Elimina appuntamento"
         Me.btnDelete.UseVisualStyleBackColor = True
         '
         ' FormCalendar

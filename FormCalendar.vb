@@ -233,6 +233,19 @@ Public Class FormCalendar
 
 
     Private Sub dgvAppointments_SelectionChanged(sender As Object, e As EventArgs)
-        ' no-op to ensure selection changed handler exists
+        Try
+            ' Verifica in modo sicuro che ci sia un appuntamento reale selezionato
+            Dim elementoSelezionato As Boolean = False
+            If dgvAppointments.CurrentRow IsNot Nothing AndAlso Not dgvAppointments.CurrentRow.IsNewRow Then
+                elementoSelezionato = True
+            End If
+
+            ' Sblocca e mostra il tasto rosso solo quando clicchi un elemento
+            If btnDelete IsNot Nothing Then
+                btnDelete.Enabled = True
+                btnDelete.Visible = elementoSelezionato
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 End Class
